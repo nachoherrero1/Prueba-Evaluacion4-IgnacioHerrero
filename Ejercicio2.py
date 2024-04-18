@@ -13,13 +13,15 @@ class Mision:
             self.recursos['Valkirias'] = 10
             self.recursos['Unidades'] = 50
         else:
-            recursos_por_tipo = {
-                'defensa': {'Valkirias': 5, 'Unidades': 20},
-                'exploración': {'Valkirias': 3, 'Unidades': 10},
-                'conquista': {'Valkirias': 7, 'Unidades': 30}
-            }
-            recursos_mision = recursos_por_tipo.get(self.tipo, {})
-            self.recursos.update(recursos_mision)
+            recursos_por_tipo = [
+                ('Defensa', {'Valkirias': 5, 'Unidades': 20}),
+                ('Exploración', {'Valkirias': 3, 'Unidades': 10}),
+                ('Conquista', {'Valkirias': 7, 'Unidades': 30})
+            ]
+            for tipo, recursos in recursos_por_tipo:
+                if tipo == self.tipo:
+                    self.recursos.update(recursos)
+                    break
 
 class GestorDeMisiones:
     def __init__(self):
@@ -36,20 +38,24 @@ class GestorDeMisiones:
             for recurso, cantidad in mision.recursos.items():
                 print(f"  {recurso.capitalize()} asignadas: {cantidad}")
 
+def mostrar_recursos_asignados(misiones):
+    for mision in misiones:
+        print(f"Misión a {mision.reino_destino} ({mision.tipo}):")
+        for recurso, cantidad in mision.recursos.items():
+            print(f"  {recurso.capitalize()} asignadas: {cantidad}")
 
 def agregar_misiones():
     gestor = GestorDeMisiones()
 
     while True:
-        tipo = input("Ingrese el tipo de misión (defensa, exploración, conquista): ")
+        tipo = input("Ingrese el tipo de misión (Defensa, Exploración, Conquista): ")
         reino = input("Ingrese el reino destino: ")
         dios = input("Ingrese el dios que solicita la misión: ")
         gestor.agregar_mision(tipo, reino, dios)
-        gestor.mostrar_recursos()
+        mostrar_recursos_asignados(gestor.misiones)
 
         continuar = input("¿Desea agregar otra misión? (s/n): ")
         if continuar.lower() != 's':
             break
-
 
 agregar_misiones()
